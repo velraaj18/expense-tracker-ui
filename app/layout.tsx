@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';      
 import "./globals.css";
-
+import SideNav from "./Components/NavBar";
+import 'primereact/resources/primereact.css';
+import 'primereact/resources/themes/lara-light-indigo/theme.css';
+import "primeicons/primeicons.css";
+        
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,12 +28,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <PrimeReactProvider>
+      <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased md:mt-32 md:mx-auto md:max-w-400`}
       >
-        {children}
+        <div className="flex min-h-screen bg-black">
+          <SideNav />
+          <main className="flex-1">{children}</main>
+        </div>
       </body>
     </html>
+    </PrimeReactProvider>
+    
   );
 }
