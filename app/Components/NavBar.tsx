@@ -1,165 +1,136 @@
 "use client";
 
-import { useRef } from "react";
-import { Menu } from "primereact/menu";
-import { Avatar } from "primereact/avatar";
+import React, { useState } from "react";
+import { PanelMenu } from "primereact/panelmenu";
+import { MenuItem } from "primereact/menuitem";
+import { MenuItemOptions } from "primereact/menuitem";
+import { Badge } from "primereact/badge";
 
-export default function Navbar() {
-  const menu = useRef<Menu>(null);
+interface NavMenuItem extends MenuItem {
+  badge?: number | string;
+}
 
-  const menuItems = [
+export default function ExpenseTrackerNav() {
+  const [activeView, setActiveView] = useState("dashboard");
+
+  const itemRenderer = (item:NavMenuItem , options: MenuItemOptions) => (        
+    <a className="flex align-items-center px-3 py-2 cursor-pointer " onClick={options.onClick}>
+      <span className={`${item.icon} text-[#B0A4A4] hover:text-white`} />
+      <span className="mx-2 text-[14px]">{item.label}</span>
+      {item.badge && <Badge className="ml-auto" value={item.badge} />}
+    </a>
+  );
+
+  const items: NavMenuItem[] = [
     {
-      label: "DashBoard",
-      url: "/",
+      label: "Dashboard",
       icon: "pi pi-home",
-      hoverImage: "/images/mm-hover1.svg",
+      template: itemRenderer,
+      command: () => setActiveView("dashboard"),
     },
-
     {
       label: "Transactions",
-      icon: "pi pi-book",
-      hoverImage: "/images/mm-hover2.svg",
-      children: [
-        { label: "Academics", url: "/courses/primary", icon: "pi pi-send" },
+      icon: "pi pi-wallet",
+      template: itemRenderer,
+      items: [
         {
-          label: "Arts & Creativity",
-          url: "/courses/secondary",
-          icon: "pi pi-star",
+          label: "All Transactions",
+          icon: "pi pi-list",
+          template: itemRenderer,
+          command: () => setActiveView("transactions-all"),
         },
         {
-          label: "Athletics",
-          url: "/courses/sports",
-          icon: "pi pi-chart-bar",
+          label: "Add Transaction",
+          icon: "pi pi-plus",
+          template: itemRenderer,
+          command: () => setActiveView("transactions-add"),
         },
       ],
     },
-
     {
       label: "Budgets",
-      url: "/admissions",
-      icon: "pi pi-id-card",
-      hoverImage: "/images/mm-hover3.svg",
-      children: [
-        { label: "Academics", url: "/courses/primary", icon: "pi pi-send" },
-        {
-          label: "Arts & Creativity",
-          url: "/courses/secondary",
-          icon: "pi pi-star",
-        },
-        {
-          label: "Athletics",
-          url: "/courses/sports",
-          icon: "pi pi-chart-bar",
-        },
-      ],
+      icon: "pi pi-chart-pie",
+      template: itemRenderer,
+      command: () => setActiveView("budgets"),
     },
-
     {
       label: "Reports",
-      url: "/Admissions",
-      icon: "pi pi-users",
-      hoverImage: "/images/mm-hover4.svg",
-    },
-
-    {
-      label: "Accounts",
-      url: "/contact",
-      icon: "pi pi-envelope",
-      hoverImage: "/images/mm-hover5.svg",
-      children: [
-        { label: "Academics", url: "/courses/primary", icon: "pi pi-send" },
+      icon: "pi pi-chart-bar",
+      template: itemRenderer,
+      items: [
         {
-          label: "Arts & Creativity",
-          url: "/courses/secondary",
-          icon: "pi pi-star",
+          label: "Expense Report",
+          icon: "pi pi-arrow-down",
+          template: itemRenderer,
+          command: () => setActiveView("reports-expense"),
         },
         {
-          label: "Athletics",
-          url: "/courses/sports",
-          icon: "pi pi-chart-bar",
+          label: "Income Report",
+          icon: "pi pi-arrow-up",
+          template: itemRenderer,
+          command: () => setActiveView("reports-income"),
+        },
+      ],
+    },
+    {
+      label: "Accounts",
+      icon: "pi pi-briefcase",
+      template: itemRenderer,
+      items: [
+        {
+          label: "Bank Accounts",
+          icon: "pi pi-building",
+          template: itemRenderer,
+          command: () => setActiveView("accounts-bank"),
+        },
+        {
+          label: "Cash Wallet",
+          icon: "pi pi-money-bill",
+          template: itemRenderer,
+          command: () => setActiveView("accounts-cash"),
+        },
+      ],
+    },
+    {
+      label: "Settings",
+      icon: "pi pi-cog",
+      template: itemRenderer,
+      items: [
+        {
+          label: "Profile",
+          icon: "pi pi-user",
+          template: itemRenderer,
+          command: () => setActiveView("settings-profile"),
+        },
+        {
+          label: "Logout",
+          icon: "pi pi-sign-out",
+          template: itemRenderer,
+          command: () => console.log("logout"),
         },
       ],
     },
   ];
 
-  const profileMenu = [
-    {
-      label: "Logout",
-      icon: "pi pi-sign-out",
-    },
-  ];
+  const renderContent = () => {
+    if (activeView === "dashboard") return <div>Dashboard Overview</div>;
+    if (activeView === "transactions-all") return <div>All Transactions</div>;
+    if (activeView === "transactions-add") return <div>Add Transaction</div>;
+    if (activeView === "budgets") return <div>Budgets</div>;
+    if (activeView === "reports-expense") return <div>Expense Report</div>;
+    if (activeView === "reports-income") return <div>Income Report</div>;
+    if (activeView === "accounts-bank") return <div>Bank Accounts</div>;
+    if (activeView === "accounts-cash") return <div>Cash Wallet</div>;
+    if (activeView === "settings-profile") return <div>User Profile</div>;
+    return null;
+  };
 
   return (
-    <>
-      <div className="container z-9999 max-w-370">
-        <div className="headerUtilitybar "></div>
-        <nav className="w-full bg-white shadow-md px-4 flex items-center justify-between rounded-t-2xl">
-          {/* Logo */}
-          <div className="flex items-center h-20">
-            <div className=" flex items-center justify-center top-0 z-50">
-              <a href="/" title="logo">
-                <img src="/images/logo.svg" alt="" />
-              </a>
-            </div>
-          </div>
-
-          {/* Desktop Menu */}
-          <div className="w-2/4 header-menu h-20 justify-around items-center flex">
-            <div className="hidden menu-items h-full md:flex items-center gap-10">
-              {menuItems.map((item) => {
-                return (
-                  <div
-                    key={item.label}
-                    className="relative group cursor-pointer flex items-center h-full nav-item"
-                  >
-                    {/* Parent Menu Item */}
-                    {item.children ? (
-                      <div className="nav-parent flex items-center h-full gap-2">
-                        <span className="hover:text-[#6ca643] text-[#757782] text-lg font-bold">
-                          {item.label}
-                        </span>
-                      </div>
-                    ) : (
-                      <a
-                        href={item.url}
-                        className="nav-parent flex items-center h-full gap-2"
-                      >
-                        <span className="hover:text-[#6ca643] text-[#757782] text-lg font-bold">
-                          {item.label}
-                        </span>
-                      </a>
-                    )}
-
-                    {/* Dropdown */}
-                    {item.children && (
-                      <div className="absolute left-0 top-full w-56 bg-white shadow-lg hidden group-hover:block z-50">
-                        {item.children.map((child) => (
-                          <div
-                            className="border-b border-[#dadbe0]"
-                            key={child.label}
-                          >
-                            <a
-                              href={child.url}
-                              className="flex items-center gap-2 px-4 py-2 text-[#757782] font-bold hover:bg-gray-100 hover:text-[#6ca643]"
-                            >
-                              {child.label}
-                            </a>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Profile Dropdown (desktop) */}
-            <div className="hidden md:flex items-center gap-2">
-              <Menu model={profileMenu} popup ref={menu} />
-            </div>
-          </div>
-        </nav>
-      </div>
-    </>
+    <div className="flex h-screen">
+      <PanelMenu model={items} className="w-50 md:w-60" pt={
+        {headerContent : {className : "!bg-black !border-0 !text-[#B0A4A4] hover:!bg-gray-800 hover:!text-white"}}
+      } />
+      {/* <div className="flex-1 p-4">{renderContent()}</div> */}
+    </div>
   );
 }
