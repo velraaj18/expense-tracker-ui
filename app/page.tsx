@@ -4,8 +4,14 @@ const Page = () => {
   return (
     <>
       <div className="dashboard">
-        <div className="flex">
-          <Card subTitle={"hello"} className="bg-gray-800! text-white!"/>
+        <div className="header-bold">
+          DashBoard
+        </div>
+        <div className="dashboard-cards flex">
+          <Card className="flex">
+            <p className="card-text">SBI</p>
+            <p className=""></p>
+          </Card>
         </div>
       </div>
     </>
