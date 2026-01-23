@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@layer components {
+  .dark .p-panelmenu {
+    background-color: transparent;
+  }
+}
+
 .container {
   width: 100%;
   padding-right: 15px;
@@ -8,10 +14,26 @@
   margin-left: auto;
 }
 
-.horizontal-gap{
+.horizontal-gap {
   height: 60px;
 }
 
-.vertical-gap{
+.vertical-gap {
   width: 60px;
+}
+
+.header-bold {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.card-sm-text {
+  color: #57595b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.card-lg-text {
+  color: white;
 }

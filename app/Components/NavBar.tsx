@@ -1,20 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PanelMenu } from "primereact/panelmenu";
 import { MenuItem } from "primereact/menuitem";
 import { MenuItemOptions } from "primereact/menuitem";
 import { Badge } from "primereact/badge";
+import "@/app/css/navbar.css";
 
 interface NavMenuItem extends MenuItem {
   badge?: number | string;
 }
 
 export default function ExpenseTrackerNav() {
-  const [activeView, setActiveView] = useState("dashboard");
-
-  const itemRenderer = (item:NavMenuItem , options: MenuItemOptions) => (        
-    <a className="flex align-items-center px-3 py-2 cursor-pointer " onClick={options.onClick}>
+  const itemRenderer = (item: NavMenuItem, options: MenuItemOptions) => (
+    <a
+      className="flex align-items-center px-3 py-2 cursor-pointer "
+      onClick={options.onClick}
+    >
       <span className={`${item.icon} text-[#B0A4A4] hover:text-white`} />
       <span className="mx-2 text-[14px]">{item.label}</span>
       {item.badge && <Badge className="ml-auto" value={item.badge} />}
@@ -26,7 +28,6 @@ export default function ExpenseTrackerNav() {
       label: "Dashboard",
       icon: "pi pi-home",
       template: itemRenderer,
-      command: () => setActiveView("dashboard"),
     },
     {
       label: "Transactions",
@@ -37,13 +38,11 @@ export default function ExpenseTrackerNav() {
           label: "All Transactions",
           icon: "pi pi-list",
           template: itemRenderer,
-          command: () => setActiveView("transactions-all"),
         },
         {
           label: "Add Transaction",
           icon: "pi pi-plus",
           template: itemRenderer,
-          command: () => setActiveView("transactions-add"),
         },
       ],
     },
@@ -51,7 +50,6 @@ export default function ExpenseTrackerNav() {
       label: "Budgets",
       icon: "pi pi-chart-pie",
       template: itemRenderer,
-      command: () => setActiveView("budgets"),
     },
     {
       label: "Reports",
@@ -62,13 +60,11 @@ export default function ExpenseTrackerNav() {
           label: "Expense Report",
           icon: "pi pi-arrow-down",
           template: itemRenderer,
-          command: () => setActiveView("reports-expense"),
         },
         {
           label: "Income Report",
           icon: "pi pi-arrow-up",
           template: itemRenderer,
-          command: () => setActiveView("reports-income"),
         },
       ],
     },
@@ -81,13 +77,11 @@ export default function ExpenseTrackerNav() {
           label: "Bank Accounts",
           icon: "pi pi-building",
           template: itemRenderer,
-          command: () => setActiveView("accounts-bank"),
         },
         {
           label: "Cash Wallet",
           icon: "pi pi-money-bill",
           template: itemRenderer,
-          command: () => setActiveView("accounts-cash"),
         },
       ],
     },
@@ -100,7 +94,6 @@ export default function ExpenseTrackerNav() {
           label: "Profile",
           icon: "pi pi-user",
           template: itemRenderer,
-          command: () => setActiveView("settings-profile"),
         },
         {
           label: "Logout",
@@ -112,25 +105,65 @@ export default function ExpenseTrackerNav() {
     },
   ];
 
-  const renderContent = () => {
-    if (activeView === "dashboard") return <div>Dashboard Overview</div>;
-    if (activeView === "transactions-all") return <div>All Transactions</div>;
-    if (activeView === "transactions-add") return <div>Add Transaction</div>;
-    if (activeView === "budgets") return <div>Budgets</div>;
-    if (activeView === "reports-expense") return <div>Expense Report</div>;
-    if (activeView === "reports-income") return <div>Income Report</div>;
-    if (activeView === "accounts-bank") return <div>Bank Accounts</div>;
-    if (activeView === "accounts-cash") return <div>Cash Wallet</div>;
-    if (activeView === "settings-profile") return <div>User Profile</div>;
-    return null;
+  const DARK_KEY = "expense-tracker-theme";
+
+  const applyTheme = (isDark: boolean) => {
+    const html = document.documentElement;
+    if (isDark) html.classList.add("dark");
+    else html.classList.remove("dark");
+    localStorage.setItem(DARK_KEY, isDark ? "dark" : "light");
   };
+
+  useEffect(() => {
+    const saved = localStorage.getItem(DARK_KEY);
+    applyTheme(saved === "dark");
+  }, []);
+
+  const toggleDarkMode = () => {
+    const isDark = document.documentElement.classList.contains("dark");
+    applyTheme(!isDark);
+  };
+
+  const isDark =
+    typeof window !== "undefined" &&
+    document.documentElement.classList.contains("dark");
 
   return (
     <div className="flex h-screen">
-      <PanelMenu model={items} className="w-50 md:w-60" pt={
-        {headerContent : {className : "!bg-black !border-0 !text-[#B0A4A4] hover:!bg-gray-800 hover:!text-white"}}
-      } />
-      {/* <div className="flex-1 p-4">{renderContent()}</div> */}
+      <div className="flex flex-col w-60 ">
+        {/* MAIN MENU */}
+        <PanelMenu
+          model={items}
+          className="flex-1 overflow-auto border-0"
+          pt={{
+            headerContent: {
+              className:
+                "!bg-black !border-0 text-[#B0A4A4] hover:!bg-gray-700 hover:!text-white",
+            },
+            menuContent: { className: "!border-0 !bg-transparent" },
+          }}
+        />
+
+        {/* SETTINGS (BOTTOM) */}
+        <div className="border-t border-gray-700 p-2">
+          <button
+            onClick={toggleDarkMode}
+            className="flex items-center w-full px-3 py-2 text-sm text-[#B0A4A4] hover:bg-gray-700 hover:text-white rounded"
+          >
+            <i className={`pi ${isDark ? "pi-sun" : "pi-moon"} mr-2`} />
+            {isDark ? "Light Mode" : "Dark Mode"}
+            Dark Mode
+          </button>
+
+          <button
+            onClick={() => console.log("logout")}
+            className="flex items-center w-full px-3 py-2 text-sm text-[#B0A4A4] hover:bg-gray-700 hover:text-white rounded"
+          >
+            <i className="pi pi-sign-out mr-2" />
+            Logout
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
