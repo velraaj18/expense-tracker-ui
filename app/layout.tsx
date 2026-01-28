@@ -31,9 +31,9 @@ export default function RootLayout({
     <PrimeReactProvider>
       <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#1D2B53] md:mt-32 md:mx-auto md:max-w-400`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased dark:bg-black 2xl:mt-32 md:mx-auto md:max-w-400`}
       >
-        <div className="flex min-h-screen bg-black p-5 rounded-2xl">
+        <div className="flex min-h-160 bg-white p-5 rounded-2xl dark:bg-black">
           <SideNav />
           <main className="flex-1">{children}</main>
         </div>

@@ -1,19 +1,12 @@
-import { Card } from "primereact/card";
+import DashBoard from "./Components/DashBoard";
+import Transactions from "./Components/Transactions";
 
 const Page = () => {
   return (
     <>
-      <div className="dashboard">
-        <div className="header-bold">
-          DashBoard
-        </div>
-        <div className="dashboard-cards flex">
-          <Card className="flex">
-            <p className="card-text">SBI</p>
-            <p className=""></p>
-          </Card>
-        </div>
-      </div>
+      <DashBoard/>
+      <div className='horizontal-gap-sm md:horizontal-gap'></div>
+      <Transactions/>
     </>
   );
 };
